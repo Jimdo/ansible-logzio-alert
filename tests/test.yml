@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - Jimdo.logzio-alert
+  tasks:
+    - name: Logzio Alert 
+      logzio_alert:
+        name: "Example Alert"
+        query: >
+          message: "some message"
+          AND NOT message: "some other message"
+        suppress: 60
+        group_by_fields:
+          - type
+        notification_endpoints:
+          - Slack Team Channel
