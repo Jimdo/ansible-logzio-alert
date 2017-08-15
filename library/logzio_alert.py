@@ -87,15 +87,17 @@ options:
 
     aggregation_type:
         required: false
-        default: COUNT
+        default: NONE
         choices: [SUM, MIN, MAX, AVG, COUNT, NONE]
         description:
             - The kind of aggregation we want to make over the aggregation field in the queried messages.
+            - According to logz.io, 'NONE' is the same as 'COUNT'. However, 'COUNT' requires an aggregation_field
 
     aggregation_field:
         required: false
         description:
             - The field we want to select for aggregation
+            - Required, if aggregation_type is not 'NONE'
 
     group_by_fields:
         required: false
@@ -157,6 +159,10 @@ class LogzioAlertConfiguration(object):
         self.valueAggregationField = configuration['valueAggregationField']
         self.groupByAggregationFields = configuration['groupByAggregationFields']
         self.alertNotificationEndpoints = configuration['alertNotificationEndpoints']
+
+    def validate(self):
+        if self.valueAggregationType not in [None, 'NONE'] and self.valueAggregationField is None:
+            raise Exception("For aggregation, both 'aggregation_type' and 'aggregation_field' need to be configured (type was '%s')" % self.valueAggregationType)
 
     def __eq__(self, other):
         for k, v in self.__dict__.iteritems():
@@ -310,7 +316,7 @@ class LogzioAlertModule(object):
                 notification_emails=dict(required=False, default=[], type='list'),
                 enabled=dict(required=False, default=True, type='bool'),
                 suppress=dict(required=False, default=5, type='int'),
-                aggregation_type=dict(required=False, default='COUNT', choices=['SUM', 'MIN', 'MAX', 'AVG', 'COUNT', 'NONE'], type='str'),
+                aggregation_type=dict(required=False, default='NONE', choices=['SUM', 'MIN', 'MAX', 'AVG', 'COUNT', 'NONE'], type='str'),
                 aggregation_field=dict(required=False, type='str'),
                 group_by_fields=dict(required=False, default=[], type='list'),
                 notification_endpoints=dict(required=False, default=[], type='list')
@@ -343,7 +349,7 @@ class LogzioAlertModule(object):
 
     def alert_configuration(self):
         notification_endpoint_ids = self.notification_endpoints_to_ids(self.module.params['notification_endpoints'])
-        return LogzioAlertConfiguration({
+        configuration = LogzioAlertConfiguration({
             'title': self.module.params['name'],
             'description': self.module.params['description'],
             'severity': self.module.params['severity'],
@@ -359,6 +365,9 @@ class LogzioAlertModule(object):
             'groupByAggregationFields': self.module.params['group_by_fields'],
             'alertNotificationEndpoints': notification_endpoint_ids,
         })
+        configuration.validate()
+
+        return configuration
 
     def notification_endpoints_to_ids(self, titles):
         if titles is None:
