@@ -29,7 +29,7 @@ $ ansible-galaxy install Jimdo.logzio-alert
 | notification_emails    | false    | List of email addresses that should be notified                                                   |               |
 | enabled                | false    | Whether this alert should be active                                                               | true          |
 | suppression_interval   | false    | Time interval in minutes that repeated notifications are suppressed                               | 5             |
-| aggregation_type       | false    | The kind of aggregation we want to make over the aggregation field in the queried messages        | COUNT         |
+| aggregation_type       | false    | The kind of aggregation we want to make over the aggregation field in the queried messages        | NONE          |
 | aggregation_field      | false    | The field we want to select for aggregation                                                       |               |
 | group_by_fields        | false    | List of fields by which to group the messages in the alert                                        |               |
 | notification_endpoints | false    | List of names of the notification endpoints that should be triggered by this alert                |               |
