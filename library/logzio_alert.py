@@ -159,6 +159,8 @@ class LogzioAlertConfiguration(object):
         self.valueAggregationField = configuration['valueAggregationField']
         self.groupByAggregationFields = configuration['groupByAggregationFields']
         self.alertNotificationEndpoints = configuration['alertNotificationEndpoints']
+        # Add the filter field by default because the Logz.io does not use a default value for it.
+        self.filter = "{\"bool\":{\"must\":[],\"must_not\":[]}}"
 
     def validate(self):
         if self.valueAggregationType not in [None, 'NONE'] and self.valueAggregationField is None:
