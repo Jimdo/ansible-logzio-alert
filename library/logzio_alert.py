@@ -91,7 +91,6 @@ options:
         choices: [SUM, MIN, MAX, AVG, COUNT, NONE]
         description:
             - The kind of aggregation we want to make over the aggregation field in the queried messages.
-            - According to logz.io, 'NONE' is the same as 'COUNT'. However, 'COUNT' requires an aggregation_field
 
     aggregation_field:
         required: false
@@ -161,7 +160,7 @@ class LogzioAlertConfiguration(object):
         self.alertNotificationEndpoints = configuration['alertNotificationEndpoints']
 
     def validate(self):
-        if self.valueAggregationType not in [None, 'NONE'] and self.valueAggregationField is None:
+        if self.valueAggregationType not in [None, 'NONE', 'COUNT'] and self.valueAggregationField is None:
             raise Exception("For aggregation, both 'aggregation_type' and 'aggregation_field' need to be configured (type was '%s')" % self.valueAggregationType)
 
     def __eq__(self, other):
