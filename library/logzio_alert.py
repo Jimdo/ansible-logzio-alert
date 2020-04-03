@@ -124,7 +124,7 @@ EXAMPLES = '''
       - Slack Team Channel
 '''
 
-import httplib
+import http.client
 
 from ansible.module_utils.basic import *
 
@@ -158,15 +158,13 @@ class LogzioAlertConfiguration(object):
         self.valueAggregationField = configuration['valueAggregationField']
         self.groupByAggregationFields = configuration['groupByAggregationFields']
         self.alertNotificationEndpoints = configuration['alertNotificationEndpoints']
-        # Add the filter field by default because the Logz.io does not use a default value for it.
-        self.filter = "{\"bool\":{\"must\":[],\"must_not\":[]}}"
 
     def validate(self):
         if self.valueAggregationType not in [None, 'NONE', 'COUNT'] and self.valueAggregationField is None:
             raise Exception("For aggregation, both 'aggregation_type' and 'aggregation_field' need to be configured (type was '%s')" % self.valueAggregationType)
 
     def __eq__(self, other):
-        for k, v in self.__dict__.iteritems():
+        for k, v in self.__dict__.items():
             if not k.startswith('_'):
 
                 # compare all lists unordered
@@ -215,7 +213,7 @@ class LogzioClient(object):
         if payload is not None:
             body = json.dumps(payload.__dict__)
 
-        conn = httplib.HTTPSConnection(self.logzio_api_endpoint)
+        conn = http.client.HTTPSConnection(self.logzio_api_endpoint)
         conn.request(method, path, body, headers)
         return LogzioResponse(conn.getresponse())
 
