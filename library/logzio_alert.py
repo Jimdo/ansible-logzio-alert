@@ -146,10 +146,8 @@ class LogzioAlertConfiguration(object):
     def __init__(self, configuration):
         self.title = configuration['title']
         self.description = configuration['description']
-        self.severity = configuration['severity']
         self.query_string = configuration['query_string']
         self.operation = configuration['operation']
-        self.threshold = configuration['threshold']
         self.searchTimeFrameMinutes = configuration['searchTimeFrameMinutes']
         self.notificationEmails = configuration['notificationEmails']
         self.isEnabled = configuration['isEnabled']
@@ -158,6 +156,7 @@ class LogzioAlertConfiguration(object):
         self.valueAggregationField = configuration['valueAggregationField']
         self.groupByAggregationFields = configuration['groupByAggregationFields']
         self.alertNotificationEndpoints = configuration['alertNotificationEndpoints']
+        self.severityThresholdTiers = configuration['severityThresholdTiers']
 
     def validate(self):
         if self.valueAggregationType not in [None, 'NONE', 'COUNT'] and self.valueAggregationField is None:
@@ -348,13 +347,15 @@ class LogzioAlertModule(object):
 
     def alert_configuration(self):
         notification_endpoint_ids = self.notification_endpoints_to_ids(self.module.params['notification_endpoints'])
+        severityThresholdTier = {
+                'severity': self.module.params['severity'],
+                'threshold': self.module.params['threshold']
+        }
         configuration = LogzioAlertConfiguration({
             'title': self.module.params['name'],
             'description': self.module.params['description'],
-            'severity': self.module.params['severity'],
             'query_string': self.module.params['query'],
             'operation': self.module.params['operation'],
-            'threshold': self.module.params['threshold'],
             'searchTimeFrameMinutes': self.module.params['timeframe'],
             'notificationEmails': self.module.params['notification_emails'],
             'isEnabled': self.module.params['enabled'],
@@ -363,6 +364,7 @@ class LogzioAlertModule(object):
             'valueAggregationField': self.module.params['aggregation_field'],
             'groupByAggregationFields': self.module.params['group_by_fields'],
             'alertNotificationEndpoints': notification_endpoint_ids,
+            'severityThresholdTiers': [ severityThresholdTier ]
         })
         configuration.validate()
 
