@@ -166,6 +166,15 @@ class LogzioAlertConfiguration(object):
         for k, v in self.__dict__.items():
             if not k.startswith('_'):
 
+                # there is currently only one element in
+                # severityThresholdTiers so we can shortcut with direct
+                # comparision
+                if k == 'severityThresholdTiers':
+                    if v != other.__dict__[k]:
+                        return False
+
+                    continue
+
                 # compare all lists unordered
                 if isinstance(v, list):
                     if frozenset(v) != frozenset(other.__dict__[k]):
