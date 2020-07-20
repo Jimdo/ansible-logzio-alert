@@ -28,7 +28,7 @@ $ ansible-galaxy install Jimdo.logzio-alert
 | timeframe              | false    | Time interval in minutes that is considered for the calculation of the threshold                  | 10            |
 | notification_emails    | false    | List of email addresses that should be notified                                                   |               |
 | enabled                | false    | Whether this alert should be active                                                               | true          |
-| suppression_interval   | false    | Time interval in minutes that repeated notifications are suppressed                               | 5             |
+| suppress               | false    | Time interval in minutes that repeated notifications are suppressed                               | 5             |
 | aggregation_type       | false    | The kind of aggregation we want to make over the aggregation field in the queried messages        | NONE          |
 | aggregation_field      | false    | The field we want to select for aggregation                                                       |               |
 | group_by_fields        | false    | List of fields by which to group the messages in the alert                                        |               |
