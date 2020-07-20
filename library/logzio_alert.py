@@ -79,7 +79,7 @@ options:
         description:
             - whether this alert should be active
 
-    suppression_interval:
+    suppress:
         required: false
         default: 5
         description:
